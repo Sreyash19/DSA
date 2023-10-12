@@ -3,6 +3,7 @@
         "*.html": "html",
         "ostream": "cpp",
         "iostream": "cpp",
-        "xiosbase": "cpp"
+        "xiosbase": "cpp",
+        "xstring": "cpp"
     }
 }
