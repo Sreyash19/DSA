@@ -12,7 +12,7 @@ int main(){
             //As ASCII of A is 65 when added 1 it becomes 66 which is ASCII of B
             char ch = 'A' + row-1;
             cout<<ch;
-            col = col +1;
+            col = col +1; 
         }
         cout<<endl;
         row=row+1;
