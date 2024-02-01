@@ -1,0 +1,212 @@
+QUESTION ON CODESTUDIO
+
+/*************************************************************
+
+    Following is the Binary Tree node structure:
+
+    class TreeNode
+    {
+    public:
+        int data;
+        TreeNode *left, *right;
+        TreeNode() : data(0), left(NULL), right(NULL) {}
+        TreeNode(int x) : data(x), left(NULL), right(NULL) {}
+        TreeNode(int x, TreeNode *left, TreeNode *right) : data(x), left(left), right(right) {}
+    };
+
+*************************************************************/
+//APPROACH 1 Using Vector
+
+// void inorder(TreeNode *root, vector<int> &in){
+//     if(root == NULL){
+//         return ;
+//     }
+//     inorder(root->left, in);
+//     in.push_back(root->data);
+//     inorder(root->right, in);
+// }
+
+// vector<int> mergeArrays(vector<int> &a, vector<int> &b){
+//     vector<int> ans(a.size() + b.size());
+//     int i=0, j=0;
+//     int k =0;
+//     while(i < a.size() && j < b.size()){
+//         if(a[i] < b[j]){
+//             ans[k++] = a[i];
+//             i++;
+//         }
+//         else{
+//             ans[k++]=b[j];
+//             j++;
+//         }
+//     }
+
+//     while(i<a.size()){
+//         ans[k++] = a[i];
+//         i++;
+//     }
+
+//     while(j<b.size()){
+//         ans[k++] = b[j];
+//         j++;
+//     }
+//     return ans;
+// }
+
+// //**No need here for this question**
+// // TreeNode* inorderToBST(int s, int e, vector<int> &in){
+// //     if(s>e){
+// //         return NULL;
+// //     }
+// //     int mid = (s+e)/2;
+// //     TreeNode *root = new TreeNode(in[mid]);
+// //     root->left = inorderToBST(s, mid-1, in);
+// //     root->right = inorderToBST(mid+1, e, in);
+// //     return root;
+// // }
+
+
+//APPROACH 2 LINKED LIST (DLL->doubly linked list)
+void converIntoSortedDLL(TreeNode *root,TreeNode* &head){
+    //base case
+    if(root == NULL){
+        return  ;
+    }
+    converIntoSortedDLL(root->right, head);
+    root->right = head;
+    //if right has no tree it will return NULL so check it
+    if(head!=NULL){
+        head->left = root;
+    }
+
+    head = root;
+
+    converIntoSortedDLL(root->left, head);
+
+}
+
+TreeNode* mergeLinkedList(TreeNode* head1, TreeNode* head2){
+    TreeNode *head = NULL;
+    TreeNode *tail = NULL;
+
+    while(head1 != NULL && head2 != NULL){
+        if(head1->data < head2->data){
+            if(head==NULL){
+                head = head1;
+                tail = head1;
+                head1 = head1->right;
+            }else{
+                tail->right = head1;
+                head1->left = tail;
+                tail = head1;
+                head1 = head1->right;
+            }
+        }
+        else{
+            if(head==NULL){
+                head = head2;
+                tail = head2;
+                head2 = head2->right;
+            }else{
+                tail->right = head2;
+                head2->left = tail;
+                tail = head2;
+                head2 = head2->right;
+            }
+
+        }
+    } 
+
+    while(head1!=NULL){
+        tail->right = head1;
+        head1->left = tail;
+        tail = head1;
+        head1 = head1->right;
+    }  
+    while(head2!=NULL){
+        tail->right = head2;
+        head2->left = tail;
+        tail = head2;
+        head2 = head2->right;
+    }  
+
+    return head;
+}
+
+int countNodes(TreeNode *head){
+    int cnt =0;
+    TreeNode* temp = head;
+    while(temp!= NULL){
+        cnt++;
+        temp = temp->right;
+    }
+    return cnt;
+}
+
+TreeNode* sortedLLToBST(TreeNode* &head, int n){
+    //base case
+    if(n<= 0 || head == NULL){
+        return NULL;
+    }
+
+    TreeNode *left = sortedLLToBST(head, n/2); //starting n/2 elements
+    TreeNode *root = head;
+    root->left = left;
+
+    head = head->right;
+    root->right = sortedLLToBST(head, n-n/2-1); // n/2 the left part, 1 is the root that's 
+
+    return root;
+}
+
+vector<int> llToVector(TreeNode* head, vector<int> &newVector){
+    TreeNode *temp = head;
+    while(temp!=NULL){
+        newVector.push_back(temp->data);
+        temp = temp->right;
+    }
+    return newVector;
+}
+
+vector<int> mergeBST(TreeNode *root1, TreeNode *root2)
+{
+    // //step 1 : store inorder
+    // vector<int> bst1,bst2;
+    // inorder(root1,bst1);
+    // inorder(root2,bst2);
+
+    // //step 2: merge both sorted arrays
+    // vector<int> mergeArray = mergeArrays(bst1, bst2);
+
+    // // int s =0, e =  mergeArray.size()-1;
+    // // return inorderToBST(s,e,mergeArray);
+
+    // return mergeArray; 
+
+
+    //APPROACH 2 : This question here requires us to return vector of merged tree in sorted way
+    //IN our approach we create the merged tree and send 
+    //For this to pass all test cases we will convert the LL into vector 
+    //step 1:convert BST into sorted doubly linked list in-place 
+    TreeNode *head1 = NULL;
+    converIntoSortedDLL(root1, head1);
+    head1->left = NULL;
+
+    TreeNode *head2 = NULL;
+    converIntoSortedDLL(root2, head2);
+    head2->left = NULL;
+
+    //step 2: merged sorted LL
+    TreeNode *head = mergeLinkedList(head1, head2);
+
+    //step 3: convert SLL into BST
+    // return sortedLLToBST(head, countNodes(head));
+
+    //convert LL to vector
+    vector<int> newVector;
+
+    return llToVector(head, newVector);
+}
+
+
+
