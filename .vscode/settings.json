@@ -10,6 +10,8 @@
         "xutility": "cpp",
         "deque": "cpp",
         "list": "cpp",
-        "queue": "cpp"
+        "queue": "cpp",
+        "unordered_map": "cpp",
+        "map": "cpp"
     }
 }
