@@ -28,6 +28,7 @@ class B{
     void operator+ (B &obj){
         int val1 = this->a;
         int val2 = obj.a;
+        // cout<<"val2 "<<val2<<endl;
         cout<<"Output "<<val2-val1<<endl;
     }
 
